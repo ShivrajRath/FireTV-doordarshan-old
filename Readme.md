@@ -6,8 +6,13 @@ More on fire tv app development can be found [https://developer.amazon.com/publi
 
 ### [To-Do] Add these features
 
-1. Reverse order of series
-2. Get channels from some other JS in gist/github or from localstorage
-3. Customize the theme
-4. Save the last viewed position
-5. Task runner to reduce the footprint
+*. Reverse order of series
+*. Save the last viewed position
+*. Task runner to reduce the footprint
+*. Detect if a video has been deleted
+*. Get error log
+
+### Other episodes to be added
+
+1. Buniyaad
+2. Circus

@@ -327,6 +327,7 @@
             //add description
             this.$el.find(".one-D-summary-title").html(this.rowElements[index].title);
             this.$el.find(".one-D-summary-description").html(this.rowElements[index].description);
+            this.$el.find(".sponsor-engine").html(exports.adEngine.getAd());
             this.$el.find("#summary-buttons-container").css("visibility", "visible" );
             if (this.rowElements[index].type === "video-live") {
                 if (this.rowElements[index].isLiveNow)

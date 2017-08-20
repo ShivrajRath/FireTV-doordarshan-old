@@ -6,7 +6,7 @@
             {
                 type: "playlist",
                 id: "PLD58L7yXrnpX4PkYiTaN4pB93iMQmGVsp",
-                title: "Wagle ki duniya"
+                title: "Wagle ki Duniya"
             },
             {
                 type: "playlist",
@@ -37,6 +37,21 @@
                 type: "playlist",
                 id: "PL736648C2016C16F9",
                 title: "Dekh Bhai Dekh"
+            },
+            {
+                type: "playlist",
+                id: "PL058KYRnhLpdDaoTKKBznoXaDN8Vlxv8f",
+                title: "Nukkad"
+            },
+            {
+                type: "playlist",
+                id: "PL1EG23oYcaFu6SNAiofd0uco0sD0JeVji",
+                title: "Bharat ek Khoj"
+            },
+            {
+                type: "playlist",
+                id: "PLFFKZZGAlUGxBkIc9Ib_ZHUBxJaiMb98a",
+                title: "Tenali Rama"
             }
         ];
 
