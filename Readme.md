@@ -11,6 +11,7 @@ More on fire tv app development can be found [https://developer.amazon.com/publi
 *. Task runner to reduce the footprint
 *. Detect if a video has been deleted
 *. Get error log
+*. Get people to login to there youtube account
 
 ### Other episodes to be added
 

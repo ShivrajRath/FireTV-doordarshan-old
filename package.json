@@ -1,0 +1,32 @@
+{
+  "name": "firetv-doordarshan-old",
+  "version": "1.0.0",
+  "description": "Firetv app to fetch youtube playlist for old doordarshan serials",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShivrajRath/FireTV-doordarshan-old.git"
+  },
+  "keywords": [
+    "FireTV",
+    "HTML5",
+    "Amazon",
+    "WASK"
+  ],
+  "author": "@ShivrajRath",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShivrajRath/FireTV-doordarshan-old/issues"
+  },
+  "homepage": "https://github.com/ShivrajRath/FireTV-doordarshan-old#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-uglify": "^3.0.0"
+  }
+}
