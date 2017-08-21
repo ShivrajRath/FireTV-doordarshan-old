@@ -6,12 +6,10 @@ More on fire tv app development can be found [https://developer.amazon.com/publi
 
 ### [To-Do] Add these features
 
-*. Reverse order of series
 *. Save the last viewed position
-*. Task runner to reduce the footprint
-*. Detect if a video has been deleted
 *. Get error log
 *. Get people to login to there youtube account
+*. Cache the youtube playlist response for faster result
 
 ### Other episodes to be added
 

@@ -21,7 +21,8 @@
             {
                 type: "playlist",
                 id: "PLUiMfS6qzIMxiHu2N2Px1ISp5vxCm3PMo",
-                title: "Byomkesh Bakshi"
+                title: "Byomkesh Bakshi",
+                reversePlaylist: true
             },
             {
                 type: "playlist",

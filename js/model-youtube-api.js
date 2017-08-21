@@ -232,6 +232,7 @@
                 if (this.premadeChannels[i].type === "playlist") {
                     this.channelData.push({
                         type: "playlist",
+                        reversePlaylist: !!this.premadeChannels[i].reversePlaylist,
                         id: this.premadeChannels[i].id
                     });
                     this.categoryData.push(this.premadeChannels[i].title);
@@ -528,6 +529,9 @@
                 success: function(jsonData) {
                     this.categoryData = [];
                     var items = jsonData.items;
+                    if(this.channelData[this.currentCategory].reversePlaylist){
+                        items = items.reverse();
+                    }
                     var currObj = {};
                     for (var i = 0; i < items.length; i++) {
                         var snippet = items[i].snippet;                  
