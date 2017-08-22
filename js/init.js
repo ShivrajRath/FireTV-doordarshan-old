@@ -42,7 +42,8 @@
             {
                 type: "playlist",
                 id: "PL058KYRnhLpdDaoTKKBznoXaDN8Vlxv8f",
-                title: "Nukkad"
+                title: "Nukkad",
+                reversePlaylist: true
             },
             {
                 type: "playlist",
@@ -53,6 +54,11 @@
                 type: "playlist",
                 id: "PLFFKZZGAlUGxBkIc9Ib_ZHUBxJaiMb98a",
                 title: "Tenali Rama"
+            },
+            {
+                type: "playlist",
+                id: "PLimqN_U88-tuzyiULOGk64ttu2Yhpxxy8",
+                title: "Flop Show"
             }
         ];
 

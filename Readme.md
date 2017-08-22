@@ -6,7 +6,8 @@ More on fire tv app development can be found [https://developer.amazon.com/publi
 
 ### [To-Do] Add these features
 
-*. Save the last viewed position
+*. Save the last viewed episode
+*. Save the episode last viewed time
 *. Get error log
 *. Get people to login to there youtube account
 *. Cache the youtube playlist response for faster result
