@@ -17,9 +17,23 @@
          * Sets data to local storage
          */
         setLs: function (key, str) {
-            ls.setItem(btoa(key), btoa(JSON.stringify({
+            ls.setItem(this.encode(key), this.encode(JSON.stringify({
                 data: str
             })));
+        },
+
+        /**
+         * String encode
+         */
+        encode: function (str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        },
+
+        /**
+         * String decode
+         */
+        decode: function (str) {
+            return decodeURIComponent(escape(window.atob(str)));
         },
 
         /**
@@ -27,10 +41,6 @@
          */
         clearCacheIfNewDevKey: function (devKey) {
             var cachedDevKey = ls.getItem('devKey');
-            window.setTimeout(function(){
-                $('.sponsor-engine:visible').html('Dev key in local storage : ' + cachedDevKey);
-            }, 5000);
-            
 
             // If dev key is not set, then set
             if (!cachedDevKey) {
@@ -47,7 +57,7 @@
         getCache: function (devKey, storageKey) {
             try {
                 this.clearCacheIfNewDevKey(devKey);
-                return JSON.parse(JSON.parse(atob((ls.getItem(btoa(storageKey)) || 'eyJkYXRhIjp7fX0='))).data);
+                return JSON.parse(JSON.parse(this.decode((ls.getItem(this.encode(storageKey)) || 'eyJkYXRhIjp7fX0='))).data);
             } catch (ex) {
                 return;
             }

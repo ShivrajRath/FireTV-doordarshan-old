@@ -6236,9 +6236,23 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
          * Sets data to local storage
          */
         setLs: function (key, str) {
-            ls.setItem(btoa(key), btoa(JSON.stringify({
+            ls.setItem(this.encode(key), this.encode(JSON.stringify({
                 data: str
             })));
+        },
+
+        /**
+         * String encode
+         */
+        encode: function (str) {
+            return window.btoa(unescape(encodeURIComponent(str)));
+        },
+
+        /**
+         * String decode
+         */
+        decode: function (str) {
+            return decodeURIComponent(escape(window.atob(str)));
         },
 
         /**
@@ -6246,10 +6260,6 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
          */
         clearCacheIfNewDevKey: function (devKey) {
             var cachedDevKey = ls.getItem('devKey');
-            window.setTimeout(function(){
-                $('.sponsor-engine:visible').html('Dev key in local storage : ' + cachedDevKey);
-            }, 5000);
-            
 
             // If dev key is not set, then set
             if (!cachedDevKey) {
@@ -6266,7 +6276,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
         getCache: function (devKey, storageKey) {
             try {
                 this.clearCacheIfNewDevKey(devKey);
-                return JSON.parse(JSON.parse(atob((ls.getItem(btoa(storageKey)) || 'eyJkYXRhIjp7fX0='))).data);
+                return JSON.parse(JSON.parse(this.decode((ls.getItem(this.encode(storageKey)) || 'eyJkYXRhIjp7fX0='))).data);
             } catch (ex) {
                 return;
             }
@@ -8130,7 +8140,7 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
         skipLength: 30,
         controlsHideTime: 3000,
         user: "DoordarshanNational",
-        devKey: "AIzaSyAIe1ylMweWtAV0bWKQVFh-_237OPSCLOQ",
+        devKey: "AIzaSyBwGt74xF1lwsuzP1iueYr4SJ_QukuSlqI",
         showLatestChannel: true,
         channels: getChannels(),
         displayButtons: false

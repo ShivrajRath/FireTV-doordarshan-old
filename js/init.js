@@ -73,7 +73,7 @@
         skipLength: 30,
         controlsHideTime: 3000,
         user: "DoordarshanNational",
-        devKey: "AIzaSyAIe1ylMweWtAV0bWKQVFh-_237OPSCLOQ",
+        devKey: "AIzaSyBwGt74xF1lwsuzP1iueYr4SJ_QukuSlqI",
         showLatestChannel: true,
         channels: getChannels(),
         displayButtons: false
