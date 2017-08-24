@@ -21,6 +21,7 @@ gulp.task('js-fef', function () {
             'js/playlist-player-view.js',
             'js/search-input-view.js',
             'js/controls-view.js',
+            'js/cache.js',
             'js/model-youtube-api.js',
             'js/app.js',
             'js/sponsor.js',
