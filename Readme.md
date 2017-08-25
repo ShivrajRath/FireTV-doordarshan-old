@@ -9,8 +9,5 @@ More on fire tv app development can be found [https://developer.amazon.com/publi
 *. Save the last viewed episode
 *. Save the episode last viewed time
 *. Get error log
-
-### Other episodes to be added
-
-1. Buniyaad
-2. Circus
+*. Load more than 50 episodes
+*. Sort the channels based on usage
