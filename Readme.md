@@ -6,8 +6,15 @@ More on fire tv app development can be found [https://developer.amazon.com/publi
 
 ### [To-Do] Add these features
 
-*. Save the last viewed episode
-*. Save the episode last viewed time
-*. Get error log
-*. Load more than 50 episodes
-*. Sort the channels based on usage
+* Save the last viewed episode
+* Save the episode last viewed time
+* Get error log
+* Load more than 50 episodes
+* Sort the channels based on usage
+
+### Color guidline
+* #ebb402 - Doordarshan background
+
+### Privacy Policy
+
+All the videos are coming from youtube playlists. For any violation, the app won't be responsible.
