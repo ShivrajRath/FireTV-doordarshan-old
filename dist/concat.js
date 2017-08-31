@@ -8084,12 +8084,28 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             title: "Dekh Bhai Dekh"
         }, {
             type: "playlist",
+            id: "PL4394F067A668CE1B",
+            title: "Farman"
+        }, {
+            type: "playlist",
             id: "PL0CaUqi81mPl2HCNflNuzo3UtuDMsfA4a",
             title: "Fauji"
         }, {
             type: "playlist",
             id: "PLimqN_U88-tuzyiULOGk64ttu2Yhpxxy8",
             title: "Flop Show"
+        }, {
+            type: "playlist",
+            id: "PLMymQAN3VhbRehibo2vmOsxwzJIMRVbzf",
+            title: "Idhar Udhar"
+        }, {
+            type: "playlist",
+            id: "ELi374o_6uYmtgytSSlq2uZA",
+            title: "Indradhanush"
+        }, {
+            type: "playlist",
+            id: "PLcDuwjtEYAxrUbBR9F98OWVBIsa2Tfj5a",
+            title: "Kirdaar"
         }, {
             type: "playlist",
             id: "PL_c7L8RcICKpLCrTT_ZlyBlooup2aHBjT",
@@ -8111,6 +8127,10 @@ var __module0__ = (function(__dependency1__, __dependency2__, __dependency3__, _
             type: "playlist",
             id: "PLFFKZZGAlUGxBkIc9Ib_ZHUBxJaiMb98a",
             title: "Tenali Rama"
+        }, {
+            type: "playlist",
+            id: "PL5_hRTe2yBxo7yGgNifcco5nP0KxTEDr0",
+            title: "Vikram Aur Betaal"
         }, {
             type: "playlist",
             id: "PLD58L7yXrnpX4PkYiTaN4pB93iMQmGVsp",
