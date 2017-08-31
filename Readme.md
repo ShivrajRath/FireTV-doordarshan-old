@@ -4,6 +4,8 @@ This is a HTML5 based web app for firetv to view old doordarshan serials.
 
 More on fire tv app development can be found [https://developer.amazon.com/public/solutions/platforms/webapps/docs/getting-started-with-web-apps-for-fire-tv](https://developer.amazon.com/public/solutions/platforms/webapps/docs/getting-started-with-web-apps-for-fire-tv).
 
+You can download the app from [here](https://www.amazon.com/dp/B07541P9YV/ref=sr_1_1?s=mobile-apps&ie=UTF8&qid=1503664690).
+
 ### [To-Do] Add these features
 
 * Save the last viewed episode
