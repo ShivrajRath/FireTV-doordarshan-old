@@ -5,67 +5,70 @@
  *
  */
 
-(function(exports) {
+(function (exports) {
     "use strict";
 
-   /**
-    * The 'pause' event is fired when the app is sent to the background (app completely hidden) or when its partially obscured 
-    */
+    var cacheManager = exports.cacheManager;
+
+    /**
+     * The 'pause' event is fired when the app is sent to the background (app completely hidden) or when its partially obscured 
+     */
     function onPause() {
         if (app.playerView) {
             app.playerView.pauseVideo();
         }
     }
 
-   /**
-    * The 'resume' event is fired when the app is brought to the foreground (app completely visible) including when the Voice Search Dialog is dismissed
-    */
+    /**
+     * The 'resume' event is fired when the app is brought to the foreground (app completely visible) including when the Voice Search Dialog is dismissed
+     */
     function onResume() {
-         if (app.playerView) {
-             app.playerView.resumeVideo();
-         }
+        if (app.playerView) {
+            app.playerView.resumeVideo();
+        }
     }
 
-   /**
-    * Add listeners for pause and resume when the platform is ready
-    */
+    /**
+     * Add listeners for pause and resume when the platform is ready
+     */
     function onAmazonPlatformReady() {
-        document.addEventListener("pause" , onPause, false);
-        document.addEventListener("resume" , onResume, false);
+        document.addEventListener("pause", onPause, false);
+        document.addEventListener("resume", onResume, false);
     }
 
-   /**
-    * Handle device rotation event
-    * When in portrait mode put up the app overlay div and notify the user
-    * to change back to landscape
-    */
+    /**
+     * Handle device rotation event
+     * When in portrait mode put up the app overlay div and notify the user
+     * to change back to landscape
+     */
     function handleDeviceOrientation() {
         //disregard on FireTV
-        if(navigator.userAgent.match(/AFT/i)) {return;}
+        if (navigator.userAgent.match(/AFT/i)) {
+            return;
+        }
 
         //wrap in a timer to make sure the height and width are updated
-        setTimeout(function() {
-            if(window.innerWidth < window.innerHeight) {
+        setTimeout(function () {
+            if (window.innerWidth < window.innerHeight) {
                 $('#overlay-message').html('please rotate your device back to landscpe');
-                $('#app-overlay').css('display', 'block'); 
-            } 
-            else {
+                $('#app-overlay').css('display', 'block');
+            } else {
                 $('#overlay-message').html('');
-                $('#app-overlay').css('display', 'none'); 
+                $('#app-overlay').css('display', 'none');
             }
         }, 500);
     }
 
-    document.addEventListener("amazonPlatformReady" , onAmazonPlatformReady, false);  
-    window.addEventListener('orientationchange', handleDeviceOrientation, false); 
+    document.addEventListener("amazonPlatformReady", onAmazonPlatformReady, false);
+    window.addEventListener('orientationchange', handleDeviceOrientation, false);
 
-   /**
-    * The app object : the controller for the app, it creates views, manages navigation between views
-    *                  routes input to the currently focused view, giving data to the views, and otherwise stitching things together
-    * @param {Object} settingsParams settings for the application
-    *                 settingsParams.dataURL {String} url of the initial data request 
-    *                 settingsParams.displayButtons {Boolean} flag that tells the app to display the buttons or not
-    */
+    /**
+     * The app object : the controller for the app, it creates views, manages navigation between views
+     *                  routes input to the currently focused view, giving data to the views, and otherwise stitching things together
+     * @param {Object} settingsParams settings for the application
+     *                 settingsParams.dataURL {String} url of the initial data request 
+     *                 settingsParams.displayButtons {Boolean} flag that tells the app to display the buttons or not
+     */
     function App(settingsParams) {
 
         //hold onto the app settings
@@ -75,38 +78,37 @@
         //main application container div
         this.$appContainer = $("#app-container");
 
-       /**
-        * Handle the call to the model to get our data 
-        */
+        /**
+         * Handle the call to the model to get our data 
+         */
         this.makeInitialDataCall = function () {
             this.data.loadInitialData(this.dataLoaded);
         };
 
-       /**
-        * Callback from XHR to load the data model, this really starts the app UX
-        */
-        this.dataLoaded = function() {
+        /**
+         * Callback from XHR to load the data model, this really starts the app UX
+         */
+        this.dataLoaded = function () {
             var logo;
             this.$appContainer.empty();
 
             //check for entitlement services
-            if(settingsParams.entitlement) {
+            if (settingsParams.entitlement) {
                 this.initializeEntitlementView();
             }
 
             // quick template render to add the logo to the app, probably doesnt need an entire view since its one line
             if (app.data.appLogo) {
                 logo = app.data.appLogo;
-            } 
-            else {
+            } else {
                 logo = "assets/img_logo.png";
             }
-            
+
             var html = utils.buildTemplate($("#app-header-template"), {
-                img_logo:logo
+                img_logo: logo
             });
             this.$appContainer.append(html);
-            
+
             this.initializeLeftNavView();
 
             this.initializeOneDView();
@@ -115,17 +117,17 @@
 
         }.bind(this);
 
-       /** 
-        * Set the application's current view
-        * @param {Object} view the current view
-        */
+        /** 
+         * Set the application's current view
+         * @param {Object} view the current view
+         */
         this.selectView = function (view) {
             this.currentView = view;
         };
 
-       /**
-        * User has pressed the back button
-        */
+        /**
+         * User has pressed the back button
+         */
         this.exitApp = function () {
             if (confirm("Are you sure you want to exit?")) {
                 window.open('', '_self').close();
@@ -140,98 +142,97 @@
             clearTimeout(this.liveUpdater);
             if (this.subCategoryView) {
                 this.transitionFromPlayerToSubCategory();
-            }
-            else {
+            } else {
                 this.transitionFromPlayerToOneD();
             }
         };
 
-       /**
-        * All button events route through here, send them to current view
-        * Views are switched based on the type of key press - up and down
-        * key events will make the left-nav menu the focus while left and 
-        * right control the oneDView. When the video player has focus it
-        * will handle all key events
-        * @param {Event} e
-        */
-        this.handleButton = function(e) {
+        /**
+         * All button events route through here, send them to current view
+         * Views are switched based on the type of key press - up and down
+         * key events will make the left-nav menu the focus while left and 
+         * right control the oneDView. When the video player has focus it
+         * will handle all key events
+         * @param {Event} e
+         */
+        this.handleButton = function (e) {
             //TODO: hijack button events when error dialog is active. We may not need special logic if we set dialog view to currentView.
             //Pending implementation detail.
             if (this.currentView) {
                 this.currentView.handleControls(e);
-            } 
-            else if (e.type === 'buttonpress' && e.keyCode === buttons.BACK) {
+            } else if (e.type === 'buttonpress' && e.keyCode === buttons.BACK) {
                 this.exitApp();
             }
         };
 
-       /**
-        * Handle touch events
-        */
-        this.handleTouch = function(e) {
-            if(e.type === 'swipe') {
-                if($("#left-nav-list-container").hasClass('leftnav-menulist-collapsed')) {
+        /**
+         * Handle touch events
+         */
+        this.handleTouch = function (e) {
+            if (e.type === 'swipe') {
+                if ($("#left-nav-list-container").hasClass('leftnav-menulist-collapsed')) {
                     this.currentView = this.oneDView;
-                } 
-                else {
+                } else {
                     this.currentView = this.leftNavView;
                 }
             }
             this.currentView.handleControls(e);
         };
 
-       /***************************
-        *
-        * IAP Purchase Flow 
-        *
-        **************************/
-        this.initializeEntitlementView = function() {
+        /***************************
+         *
+         * IAP Purchase Flow 
+         *
+         **************************/
+        this.initializeEntitlementView = function () {
             var entitlementView = this.entitlementView = new EntitlementView();
 
-           /**
-            * Event Handler - Handle leaving the entitlement view
-            */
-            entitlementView.on('exit', function() {
+            /**
+             * Event Handler - Handle leaving the entitlement view
+             */
+            entitlementView.on('exit', function () {
                 this.transitionOutOfEntitlementView();
             }, this);
 
             entitlementView.render(app.$appContainer);
         };
 
-       /***************************
-        *
-        * Left Nav View Object
-        *
-        **************************/
-        this.initializeLeftNavView = function() {
+        /***************************
+         *
+         * Left Nav View Object
+         *
+         **************************/
+        this.initializeLeftNavView = function () {
 
             var leftNavView = this.leftNavView = new LeftNavView();
             if (this.showSearch) {
                 this.searchInputView = new SearchInputView();
             }
 
-           /**
-            * Event Handler - Select menu item
-            * @param {Number} index the index of the selected item
-            */
-            leftNavView.on('select', function(index) {
+            /**
+             * Event Handler - Select menu item
+             * @param {Number} index the index of the selected item
+             */
+            leftNavView.on('select', function (index) {
                 if (!this.showSearch || index !== 0) {
                     //remove the contents of the oneDView
                     this.oneDView.remove();
-                    
+
                     //show the spinner
                     this.loadingSpinner.show.spinner();
 
                     //set the newly selected category index
-                    if(this.showSearch) { index--;}
+                    if (this.showSearch) {
+                        index--;
+                    }
                     app.data.setCurrentCategory(index);
 
                     //update the content
-                    this.oneDView.updateCategory();   
-                    
+                    this.oneDView.updateCategory();
+
                     //set the selected view
                     this.selectView(this.oneDView);
-                    
+
                     //hide the leftNav
                     this.leftNavView.collapse();
 
@@ -239,71 +240,73 @@
                         this.leftNavView.searchUpdated = false;
                         this.searchInputView.reset();
                     }
-                }
-                else {
+                } else {
                     //remove the contents of the oneDView
                     this.oneDView.remove();
-                    
+
                     //show the spinner
                     this.loadingSpinner.show.spinner();
                     this.oneDView.updateCategoryFromSearch(this.searchInputView.currentSearchQuery);
 
                     //set the selected view
                     this.selectView(this.oneDView);
-                    
+
                     //hide the leftNav
                     this.leftNavView.collapse();
                 }
+
+                // Store the last accessed channel in localstroage
+                this.settingsParams.channels[index].lastAccessedTime = new Date().getTime();
+                cacheManager.setCache(this.settingsParams.devKey, 'channels', this.settingsParams.channels);
+
             }, this);
 
-           /**
-            * Event Handler - deselect leftnav view
-            */
-            leftNavView.on('deselect', function() {
+            /**
+             * Event Handler - deselect leftnav view
+             */
+            leftNavView.on('deselect', function () {
                 this.transitionFromLefNavToOneD();
                 if (this.oneDView.noItems) {
                     this.exitApp();
                 }
             }, this);
-   
-           /**
-            * Event Handler - exit the left nav back to oneD
-            */
-            leftNavView.on('exit', function() {
+
+            /**
+             * Event Handler - exit the left nav back to oneD
+             */
+            leftNavView.on('exit', function () {
                 this.leftNavView.collapse();
                 this.transitionToLeftNavView();
             }, this);
 
             if (this.showSearch) {
-                this.searchInputView.on('searchQueryEntered', function() {
+                this.searchInputView.on('searchQueryEntered', function () {
                     if (this.leftNavView.currSelectedIndex === 0) {
-                    this.leftNavView.searchUpdated = true;
-                    this.leftNavView.confirmNavSelection();
-                    }   
+                        this.leftNavView.searchUpdated = true;
+                        this.leftNavView.confirmNavSelection();
+                    }
                 }, this);
             }
 
-           /**
-            * Event Handler - Make this the active view
-            */
-            leftNavView.on('makeActive', function() {
+            /**
+             * Event Handler - Make this the active view
+             */
+            leftNavView.on('makeActive', function () {
                 this.transitionToExpandedLeftNavView();
             }, this);
 
-           /**
-            * Event Handler - Change index of currently selected menu item 
-            * @param {Number} index the index of the selected item
-            */
-            leftNavView.on('indexChange', function(index) {
+            /**
+             * Event Handler - Change index of currently selected menu item 
+             * @param {Number} index the index of the selected item
+             */
+            leftNavView.on('indexChange', function (index) {
                 //set the newly selected category index
                 if (this.showSearch && index === 0) {
                     this.searchInputView.select();
-                }
-                else {
+                } else {
                     if (this.showSearch) {
                         app.data.setCurrentCategory(index - 1);
-                    } 
-                    else {
+                    } else {
                         app.data.setCurrentCategory(index);
                     }
                     if (this.showSearch) {
@@ -313,11 +316,11 @@
 
             }, this);
 
-           /**
-            * Event Handler - When the left nav is loaded remove the 
-            *                 app overlay until the content is loaded
-            */
-            leftNavView.on('loadComplete', function() {
+            /**
+             * Event Handler - When the left nav is loaded remove the 
+             *                 app overlay until the content is loaded
+             */
+            leftNavView.on('loadComplete', function () {
                 this.loadingSpinner.hide.overlay();
             }, this);
 
@@ -332,95 +335,92 @@
             leftNavView.render(app.$appContainer, leftNavData, startIndex);
         };
 
-       /***************************
-        *
-        * One D View 
-        *
-        **************************/
-        this.initializeOneDView = function() {
+        /***************************
+         *
+         * One D View 
+         *
+         **************************/
+        this.initializeOneDView = function () {
             // create and set up the 1D view
             var oneDView = this.oneDView = new OneDView();
 
-           /** 
-            * Event Handler - Select shoveler item
-            * @param {Number} index the index of the selected item
-            */
-            oneDView.on('select', function(index) {
+            /** 
+             * Event Handler - Select shoveler item
+             * @param {Number} index the index of the selected item
+             */
+            oneDView.on('select', function (index) {
                 this.data.setCurrentItem(index);
                 if (this.categoryData[index].type === "subcategory") {
                     this.transitionToSubCategory(this.categoryData, index);
-                } 
-                else if (this.categoryData[index].type === "video-live" && !this.categoryData[index].isLiveNow) {
+                } else if (this.categoryData[index].type === "video-live" && !this.categoryData[index].isLiveNow) {
                     alert("This video is not yet available.");
                     buttons.resync();
-                }
-                else {
+                } else {
                     this.createLiveStreamUpdater(this.categoryData, index);
                     this.transitionToPlayer(this.categoryData, index);
                 }
             }, this);
 
-           /** 
-            * Event Handler - No content found for oneD event
-            */
-            oneDView.on('noContent', function() {
-                window.setTimeout(function(){
+            /** 
+             * Event Handler - No content found for oneD event
+             */
+            oneDView.on('noContent', function () {
+                window.setTimeout(function () {
                     this.loadingSpinner.hide.spinner();
                     this.transitionToLeftNavView();
                     this.leftNavView.setHighlightedElement();
                 }.bind(this), 10);
             }, this);
 
-           /**
-            * Go back to the left-nav menu list
-            * @param {String} direction keypress direction
-            */
-            oneDView.on('bounce', function(dir) {
-                if(dir === buttons.DOWN) {
-                    if(this.settingsParams.entitlement) {
+            /**
+             * Go back to the left-nav menu list
+             * @param {String} direction keypress direction
+             */
+            oneDView.on('bounce', function (dir) {
+                if (dir === buttons.DOWN) {
+                    if (this.settingsParams.entitlement) {
                         this.transitionToEntitlementView();
                     }
-                } 
-                else {
+                } else {
                     this.transitionToLeftNavView();
                 }
             }, this);
 
-           /**
-            * Exit the application if they go back from the oneD view
-            */
-            oneDView.on('exit', function() {
+            /**
+             * Exit the application if they go back from the oneD view
+             */
+            oneDView.on('exit', function () {
                 this.exitApp();
             }, this);
 
-           /** 
-            * Event Handler - Load Complete 
-            * @param {Number} index the index of the selected item
-            */
-            oneDView.on('loadComplete', function() {
+            /** 
+             * Event Handler - Load Complete 
+             * @param {Number} index the index of the selected item
+             */
+            oneDView.on('loadComplete', function () {
                 this.loadingSpinner.hide.spinner();
                 handleDeviceOrientation();
             }, this);
 
-           /** 
-            * Success Callback handler for category data request
-            * @param {Object} categoryData
-            */
-            var successCallback = function(categoryData) {
+            /** 
+             * Success Callback handler for category data request
+             * @param {Object} categoryData
+             */
+            var successCallback = function (categoryData) {
                 this.succeededCategoryIndex = this.leftNavView.confirmedSelection;
                 this.categoryData = categoryData;
                 $("#one-D-view-item-elements").remove();
                 oneDView.render(this.$appContainer, categoryData, this.settingsParams.displayButtons);
             }.bind(this);
 
-           /**
-            * Get data set for newly-selected category
-            */
-            oneDView.updateCategoryFromSearch = function(searchTerm) {
+            /**
+             * Get data set for newly-selected category
+             */
+            oneDView.updateCategoryFromSearch = function (searchTerm) {
                 app.data.getDataFromSearch(searchTerm, successCallback);
             }.bind(this);
 
-            oneDView.updateCategory = function() {
+            oneDView.updateCategory = function () {
                 app.data.getCategoryData(successCallback);
             }.bind(this);
 
@@ -428,7 +428,7 @@
             this.oneDView.updateCategory();
         };
 
-        this.openSubCategory = function(data) {
+        this.openSubCategory = function (data) {
             this.succeededSubCategoryIndex = this.oneDView.currSelection;
             if (this.subCategoryView) {
                 if (!this.subCategoryStack) {
@@ -446,36 +446,33 @@
             subCategoryView.fadeIn();
             this.selectView(this.subCategoryView);
 
-           /** 
-            * Event Handler - Select shoveler item
-            * @param {Number} index the index of the selected item
-            */
-            subCategoryView.on('select', function(index) {
+            /** 
+             * Event Handler - Select shoveler item
+             * @param {Number} index the index of the selected item
+             */
+            subCategoryView.on('select', function (index) {
                 if (this.subCategoryView.data[index].type === "subcategory") {
                     this.transitionToSubCategory(this.subCategoryView.data, index);
-                }
-                else if (this.subCategoryView.data[index].type === "video-live" && !this.subCategoryView.data[index].isLiveNow) {
+                } else if (this.subCategoryView.data[index].type === "video-live" && !this.subCategoryView.data[index].isLiveNow) {
                     alert("This video is not yet available.");
                     buttons.resync();
-                }
-                else {
+                } else {
                     this.createLiveStreamUpdater(this.subCategoryView.data, index);
                     this.transitionToPlayer(this.subCategoryView.data, index);
                 }
             }, this);
 
-           /**
-            * Go back to the left-nav menu list if the user presses back
-            */
-            subCategoryView.on('exit', function() {
+            /**
+             * Go back to the left-nav menu list if the user presses back
+             */
+            subCategoryView.on('exit', function () {
                 this.subCategoryView.remove();
                 this.subCategoryView = null;
                 if (this.subCategoryStack && this.subCategoryStack.length > 0) {
                     this.subCategoryView = this.subCategoryStack.pop();
                     this.subCategoryView.fadeIn();
                     this.selectView(this.subCategoryView);
-                }
-                else {
+                } else {
                     this.leftNavView.fadeIn();
                     this.oneDView.fadeIn();
                     this.selectView(this.oneDView);
@@ -483,31 +480,30 @@
 
             }, this);
         }.bind(this);
-        
-       /**
-        * Change to subcategory
-        * @param {Object} data subcategory
-        * @param {Number} index the index of the category
-        */
-        this.transitionToSubCategory = function(data, index) {
+
+        /**
+         * Change to subcategory
+         * @param {Object} data subcategory
+         * @param {Number} index the index of the category
+         */
+        this.transitionToSubCategory = function (data, index) {
             app.data.setCurrentSubCategory(data[index]);
             app.data.getSubCategoryData(this.openSubCategory);
         }.bind(this);
 
-       /** 
-        * Sets up the update function for changing the live stream title and description when the content changes on it.
-        * @param {Object} data to get the updated information from
-        * @param {Number} current index what is playing
-        */
+        /** 
+         * Sets up the update function for changing the live stream title and description when the content changes on it.
+         * @param {Object} data to get the updated information from
+         * @param {Number} current index what is playing
+         */
         this.createLiveStreamUpdater = function (data, index) {
             if (index + 1 < data.length) {
                 var nextIndex = index + 1;
-                if (data[nextIndex].type === "video-live")
-                {             
+                if (data[nextIndex].type === "video-live") {
                     var startTime = new Date(data[nextIndex].startTime).getTime();
                     var currTime = new Date().getTime();
                     var updateTime = startTime - currTime;
-                    this.liveUpdater = setTimeout(function() {
+                    this.liveUpdater = setTimeout(function () {
                         this.updateLiveStream(data, nextIndex);
                     }.bind(this), updateTime);
                 }
@@ -515,69 +511,69 @@
         }.bind(this);
 
         /* Update the title and description of the live stream when the time has come and set up the next updator */
-        this.updateLiveStream = function(data, index) {
+        this.updateLiveStream = function (data, index) {
             if (this.playerView) {
                 this.playerView.updateTitleAndDescription(data[index].title, data[index].description);
             }
             this.createLiveStreamUpdater(data, index);
         }.bind(this);
 
-       /**
-        * loadingSpinner Object 
-        * Used to show/hide the loading spinner and app overlay
-        */
+        /**
+         * loadingSpinner Object 
+         * Used to show/hide the loading spinner and app overlay
+         */
         this.loadingSpinner = {
-            show : {
-                overlay : function() {
+            show: {
+                overlay: function () {
                     $('#app-overlay').show();
                 },
-                spinner : function() {
+                spinner: function () {
                     $('#app-loading-spinner').show();
                 },
-                all : function() {
+                all: function () {
                     this.overlay();
                     this.spinner();
                 }
             },
 
-            hide : {
-                overlay : function() {
+            hide: {
+                overlay: function () {
                     $('#app-overlay').fadeOut(250);
                 },
-                spinner : function() {
+                spinner: function () {
                     $('#app-loading-spinner').hide();
                 },
-                all : function() {
+                all: function () {
                     this.overlay();
                     this.spinner();
                 }
             },
         };
 
-       /**
-        * Hide application header bar - typically used
-        * when another view takes over the screen (i.e. player)
-        */
-        this.hideHeaderBar = function() {
+        /**
+         * Hide application header bar - typically used
+         * when another view takes over the screen (i.e. player)
+         */
+        this.hideHeaderBar = function () {
             $("#app-header-bar").hide();
         };
 
-       /**
-        * Show application header bar 
-        */
-        this.showHeaderBar = function() {
+        /**
+         * Show application header bar 
+         */
+        this.showHeaderBar = function () {
             $("#app-header-bar").show();
         };
 
-/***********************************
- * 
- * Application Transition Methods
- *
- ***********************************/
-       /**
-        * Set the UI appropriately for the left-nav view
-        */
-        this.transitionToLeftNavView = function() {
+        /***********************************
+         * 
+         * Application Transition Methods
+         *
+         ***********************************/
+        /**
+         * Set the UI appropriately for the left-nav view
+         */
+        this.transitionToLeftNavView = function () {
             this.selectView(this.leftNavView);
             this.leftNavView.setHighlightedElement();
 
@@ -585,10 +581,10 @@
             this.oneDView.shrinkShoveler();
         };
 
-       /**
-        * Set the UI appropriately for the entitlement view
-        */
-        this.transitionToEntitlementView = function() {
+        /**
+         * Set the UI appropriately for the entitlement view
+         */
+        this.transitionToEntitlementView = function () {
             this.selectView(this.entitlementView);
 
             //handle content buttons
@@ -598,10 +594,10 @@
             this.entitlementView.highlightButton();
         };
 
-       /**
-        * Set the UI back to the oneDView 
-        */
-        this.transitionOutOfEntitlementView = function() {
+        /**
+         * Set the UI back to the oneDView 
+         */
+        this.transitionOutOfEntitlementView = function () {
             this.selectView(this.oneDView);
 
             //set active view in the oneDView
@@ -611,11 +607,11 @@
             this.entitlementView.deselectButton();
         };
 
-       /** 
-        * For touch there is no need to select the chosen left-nav
-        * item, so we go directly to the expanded view
-        */
-        this.transitionToExpandedLeftNavView = function() {
+        /** 
+         * For touch there is no need to select the chosen left-nav
+         * item, so we go directly to the expanded view
+         */
+        this.transitionToExpandedLeftNavView = function () {
             this.selectView(this.leftNavView);
 
             //expand the left nav
@@ -625,9 +621,9 @@
             this.oneDView.shrinkShoveler();
         };
 
-       /**
-        * Transition from left nav to the oneD view
-        */
+        /**
+         * Transition from left nav to the oneD view
+         */
         this.transitionFromLefNavToOneD = function () {
             if (this.oneDView.noItems) {
                 this.leftNavView.setHighlightedElement();
@@ -640,9 +636,9 @@
             this.oneDView.expandShoveler();
         };
 
-       /**
-        * Transition from player view to one-D view 
-        */
+        /**
+         * Transition from player view to one-D view 
+         */
         this.transitionFromPlayerToOneD = function () {
             this.selectView(this.oneDView);
             if (this.playerView) {
@@ -657,8 +653,8 @@
         };
 
         /**
-        * Transition from player view to SubCategory view 
-        */
+         * Transition from player view to SubCategory view 
+         */
         this.transitionFromPlayerToSubCategory = function () {
             this.selectView(this.subCategoryView);
             if (this.playerView) {
@@ -670,18 +666,17 @@
             this.showHeaderBar();
         };
 
-       /**
-        * Opens a player view and starts video playing in it. 
-        * @param {Array} data of current play list
-        * @param {integer} index of currently selected item
-        */
+        /**
+         * Opens a player view and starts video playing in it. 
+         * @param {Array} data of current play list
+         * @param {integer} index of currently selected item
+         */
         this.transitionToPlayer = function (data, index) {
             var playerView;
             this.playerSpinnerHidden = false;
             if (this.settingsParams.PlaylistView && data[index].type !== "video-live") {
                 playerView = this.playerView = new this.settingsParams.PlaylistView(this.settingsParams);
-            }
-            else {
+            } else {
                 playerView = this.playerView = new this.settingsParams.PlayerView(this.settingsParams);
             }
             this.oneDView.hide();
@@ -696,11 +691,10 @@
 
             playerView.on('exit', this.exitPlayerView, this);
 
-            playerView.on('indexChange', function(index) {
+            playerView.on('indexChange', function (index) {
                 if (this.subCategoryView) {
                     this.subCategoryView.changeIndex(index);
-                }
-                else {
+                } else {
                     this.oneDView.changeIndex(index);
                 }
             }, this);
@@ -708,7 +702,7 @@
             this.selectView(playerView);
 
             playerView.on('videoStatus', this.handleVideoStatus, this);
-            playerView.on('error', function(errType, errStack) {
+            playerView.on('error', function (errType, errStack) {
                 var errorDialog;
 
                 switch (errType) {
@@ -740,18 +734,16 @@
             playerView.render(this.$appContainer, data, index);
         };
 
-       /**
-        * Apps player status handler, currently just checks for playing and hides spinner and turns off the handler.
-        */
-        this.handleVideoStatus = function(currTime, duration, type) {
+        /**
+         * Apps player status handler, currently just checks for playing and hides spinner and turns off the handler.
+         */
+        this.handleVideoStatus = function (currTime, duration, type) {
             if (!this.playerSpinnerHidden && type === "playing") {
                 this.loadingSpinner.hide.all();
                 this.playerSpinnerHidden = true;
-            }
-            else if (type === "canplay") {
+            } else if (type === "canplay") {
                 this.playerView.playVideo();
-            }
-            else if (type === "ended") {
+            } else if (type === "ended") {
                 this.loadingSpinner.hide.all();
                 this.transitionFromPlayerToOneD();
             }
@@ -764,14 +756,14 @@
 
         touches.on('touch', this.handleTouch, this);
         touches.on('swipe', this.handleTouch, this);
-        
+
         // initialize error handler instance that will be used globally
         exports.errorHandler = new ErrorHandler();
         // initialize utils instance
         exports.utils = new Utils(this.settingsParams);
 
         // an error has occured that should generate a dialog to the user transition to that error
-        this.transitionToErrorDialog = function(dialogView) {
+        this.transitionToErrorDialog = function (dialogView) {
             // show the error dialog
             if ($('#app-loading-spinner').is(":visible")) {
                 this.loadingSpinner.hide.spinner();
@@ -785,53 +777,53 @@
         }.bind(this);
 
         // transition the error dialog back to the previous view
-        this.transitionFromErrorDialog = function() {
-           // remove the error dialog
-           this.errorDialog.remove();
-           this.errorDialog = null;
+        this.transitionFromErrorDialog = function () {
+            // remove the error dialog
+            this.errorDialog.remove();
+            this.errorDialog = null;
             var $appOverlay = $('#app-overlay');
 
             if ($appOverlay.css('display') !== 'none') {
                 $appOverlay.fadeOut(250);
             }
-           this.selectView(this.appViewBeforeError);
+            this.selectView(this.appViewBeforeError);
         }.bind(this);
 
         //create OK button for error dialog
-        this.createOkButtonForErrorDialog = function(okCallback) {
+        this.createOkButtonForErrorDialog = function (okCallback) {
             var buttons = [{
-                        text : "OK",
-                        id : "ok",
-                        callback : okCallback
-                    }];
+                text: "OK",
+                id: "ok",
+                callback: okCallback
+            }];
             return buttons;
         }
 
         //create buttons for error dialog
-        this.createButtonsForErrorDialog = function(okCallback, retryCallback) {
+        this.createButtonsForErrorDialog = function (okCallback, retryCallback) {
             var buttons = [{
-                        text : "OK",
-                        id : "ok",
-                        callback : okCallback
-                    },
-                    {
-                        text : "Retry",
-                        id : "retry",
-                        callback : retryCallback
-                    }];
+                    text: "OK",
+                    id: "ok",
+                    callback: okCallback
+                },
+                {
+                    text: "Retry",
+                    id: "retry",
+                    callback: retryCallback
+                }
+            ];
             return buttons;
         };
 
         //player error callback function for the OK button
-        this.playerErrorOkCallback = function() {
+        this.playerErrorOkCallback = function () {
             //go back to one D view
             this.exitPlayerView();
             if (this.subCategoryStack && this.subCategoryStack.length > 0) {
                 this.appViewBeforeError = this.subCategoryView;
                 this.transitionFromErrorDialog();
                 this.transitionFromPlayerToSubCategory();
-            }
-            else {
+            } else {
                 this.appViewBeforeError = this.oneDView;
                 this.transitionFromErrorDialog();
                 this.transitionFromPlayerToOneD();
@@ -839,9 +831,9 @@
         }.bind(this);
 
         //player error callback function for the retry button
-        this.playerErrorRetryCallback = function() {
+        this.playerErrorRetryCallback = function () {
             //retry playing the video from the beginning
-            if (this.appViewBeforeError instanceof PlaylistPlayerView || this.appViewBeforeError instanceof PlayerView){
+            if (this.appViewBeforeError instanceof PlaylistPlayerView || this.appViewBeforeError instanceof PlayerView) {
                 this.transitionFromErrorDialog();
                 this.playerView.remove();
                 var el = this.appViewBeforeError.$el;
@@ -852,18 +844,18 @@
         }.bind(this);
 
         //callback function for the OK button
-        this.exitAppCallback = function() {
+        this.exitAppCallback = function () {
             window.open('', '_self').close();
         };
 
         //initial feed error callback function for the retry button
-        this.initialFeedErrorRetryCallback = function() {
+        this.initialFeedErrorRetryCallback = function () {
             this.transitionFromErrorDialog();
             this.data.loadInitialData(this.dataLoaded);
         }.bind(this);
 
         //category error callback function for the OK button
-        this.categoryErrorOkCallback = function() {
+        this.categoryErrorOkCallback = function () {
             this.transitionFromErrorDialog();
             //if there's an error when loaing the first category, exit the app
             if (!this.succeededCategoryIndex) {
@@ -881,7 +873,7 @@
         }.bind(this);
 
         //category error callback function for the retry button
-        this.categoryErrorRetryCallback = function() {
+        this.categoryErrorRetryCallback = function () {
             //retry updating category
             this.transitionFromErrorDialog();
             this.loadingSpinner.show.spinner();
@@ -896,7 +888,7 @@
         }.bind(this);
 
         //subcategory error callback function for the OK button
-        this.subCategoryErrorOkCallback = function() {
+        this.subCategoryErrorOkCallback = function () {
             //go back to previous sub category
             this.transitionFromErrorDialog();
             this.data.setCurrentSubCategory(this.succeededSubCategoryIndex);
@@ -904,20 +896,20 @@
         }.bind(this);
 
         //subcategory error call back function for the retry button
-        this.subCategoryErrorRetryCallback = function() {
+        this.subCategoryErrorRetryCallback = function () {
             //retry updating subcategory
             this.transitionFromErrorDialog();
             this.data.getSubCategoryData(this.openSubCategory);
         }.bind(this);
 
         //search error callback functino for the OK button
-        this.searchErrorOkCallback = function() {
+        this.searchErrorOkCallback = function () {
             //transition from error dialog to previous view
             this.transitionFromErrorDialog();
         }.bind(this);
 
         //search error callback function for the retry button
-        this.searchErrorRetryCallback = function() {
+        this.searchErrorRetryCallback = function () {
             //retry
             this.transitionFromErrorDialog();
             this.loadingSpinner.show.spinner();
@@ -932,7 +924,7 @@
         this.data = new this.settingsParams.Model(this.settingsParams);
 
         // handle errors from the model 
-        this.data.on("error", function(errType, errStack) {
+        this.data.on("error", function (errType, errStack) {
             var errorDialog;
             var buttons;
 
