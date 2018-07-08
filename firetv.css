@@ -849,8 +849,7 @@ div {
 }
 
 .sponsor-engine{
-    margin-top: 50px;
-    background: white;
-    color: black;
-    padding: 25px;
+  margin-top: 50px;
+  color: #ecb400;
+  padding: 25px;
 }
